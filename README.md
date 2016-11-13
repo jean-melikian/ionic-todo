@@ -1,17 +1,27 @@
 # ionic-todo
 A cross-platform mobile application built with Ionic framework for an ESGI course
 
-## Used IDE
-Simply used Visual Studio Code on macOS with the "Cordova Tools" plugin
+## Environment
+On macOS, simply use Visual Studio Code with the "Cordova Tools" plugins
 
 ## Build and test
-Running the app on an actual iOS device is too complicated, so let's just emulate:
+- You can whether use the serve command to test the app in your browser:
 ```
-ionic build ios
-ionic emulate ios
+ionic serve --lab
 ```
-In the other hand, it is much simpler to run on an Android device:
-```
-ionic build android
-ionic run android
-```
+
+- Or actually build and test it for each platform: 
+    - iOS:
+
+    Running the app on an actual iOS device is too complicated, so let's just emulate:
+    ```
+    ionic build ios
+    ionic emulate ios
+    ```
+    - Android:
+    
+    In the other hand, it is much simpler to run on an Android device:
+    ```
+    ionic build android
+    ionic run android
+    ```
