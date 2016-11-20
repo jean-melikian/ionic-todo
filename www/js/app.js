@@ -50,6 +50,8 @@ app.config(function (localStorageServiceProvider) {
 
 .controller('TodoCtrl', function($scope, $timeout, $ionicModal, Projects, $ionicSideMenuDelegate, localStorageService) { //store the entities name in a variable
   $scope.projects = Projects.all();
+  console.log($scope.projects[0].title)
+  console.log($scope.projects[0].status)
 
   // A utility function for creating a new project
   // with the given projectTitle
@@ -68,9 +70,11 @@ app.config(function (localStorageServiceProvider) {
 
   // Called to create a new project
   $scope.newProject = function() {
-    var projectTitle = prompt('Project name');
+    var projectTitle = prompt(($scope.activeProject) ? 'Project name':'You need at least one project');
     if(projectTitle) {
       createProject(projectTitle);
+    } else if (!$scope.activeProject){
+      $scope.newProject();
     }
   }
 
@@ -91,11 +95,16 @@ app.config(function (localStorageServiceProvider) {
 
   // Called when the form is submitted
   $scope.createTask = function(task) {
-    if(!$scope.activeProject || !task) {
+    if(!task) {
       return;
     }
+    if(!$scope.activeProject) {
+      $scope.newProject();
+    }
+    console.log(task.status)
     $scope.activeProject.tasks.push({
-      title: task.title
+      title: task.title,
+      status: task.status
     });
     $scope.taskModal.hide();
 
@@ -103,7 +112,17 @@ app.config(function (localStorageServiceProvider) {
     Projects.save($scope.projects);
 
     task.title = "";
+    task.status = false
   };
+
+  // updates a task's status 
+  $scope.setStatus = function(index) {
+    if (index !== -1) {
+      $scope.activeProject.tasks[index].status = true;
+    }
+    // Inefficient, but save all the projects
+    Projects.save($scope.projects)
+  }
 
   // Open our new task modal
   $scope.newTask = function() {

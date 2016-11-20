@@ -58,8 +58,8 @@
           <!-- our list and list items -->
           <ion-content scroll="false">
             <ion-list>
-              <ion-item ng-repeat="task in activeProject.tasks">
-                {{task.title}}
+              <ion-item ng-repeat="task in activeProject.tasks track by $index">
+                <ion-checkbox ng-model="task.status" ng-click="setStatus($index)">{{task.title}}</ion-checkbox>
               </ion-item>
             </ion-list>
           </ion-content>
