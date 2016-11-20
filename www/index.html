@@ -44,22 +44,30 @@
       <ion-side-menu-content>
         <ion-header-bar class="bar-dark">
 
+
           <button class="button button-icon" ng-click="toggleProjects()">
             <i class="icon ion-navicon"></i>
           </button>
           <h1 class="title">{{(activeProject.title) ? activeProject.title : "ozoneTodoList"}}</h1>
 
           <!-- New Task button -->
-          <button class="button button-icon" ng-click="newTask()">
-            <i class="icon ion-compose"></i>
-          </button>
+          <div class="buttons">
+            <button class="button button-icon" ng-click="newTask()">
+              <i class="icon ion-compose"></i>
+            </button>
+            
+            <button class="button button-icon icon ion-ios-minus-outline"
+              ng-click="shouldShowDelete = !shouldShowDelete; shouldShowReorder = false"></button>
+          </div>
         </ion-header-bar>
 
           <!-- our list and list items -->
           <ion-content scroll="false">
-            <ion-list>
+            <ion-list show-delete="shouldShowDelete"
+                      can-swipe="listCanSwipe">
               <ion-item ng-repeat="task in activeProject.tasks track by $index">
                 <ion-checkbox ng-model="task.status" ng-click="setStatus($index)">{{task.title}}</ion-checkbox>
+                <ion-delete-button class="ion-minus-circled" ng-click="deleteTask($index)"></ion-delete-button>
               </ion-item>
             </ion-list>
           </ion-content>

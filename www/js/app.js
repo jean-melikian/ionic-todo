@@ -49,6 +49,8 @@ app.config(function (localStorageServiceProvider) {
 
 
 .controller('TodoCtrl', function($scope, $timeout, $ionicModal, Projects, $ionicSideMenuDelegate, localStorageService) { //store the entities name in a variable
+  $scope.shouldShowDelete = false;
+  $scope.listCanSwipe = true
   $scope.projects = Projects.all();
   console.log($scope.projects[0].title)
   console.log($scope.projects[0].status)
@@ -112,16 +114,25 @@ app.config(function (localStorageServiceProvider) {
     Projects.save($scope.projects);
 
     task.title = "";
-    task.status = false
+    task.status = false;
   };
 
   // updates a task's status 
   $scope.setStatus = function(index) {
     if (index !== -1) {
       $scope.activeProject.tasks[index].status = true;
+      // Inefficient, but save all the projects
+      Projects.save($scope.projects);
     }
-    // Inefficient, but save all the projects
-    Projects.save($scope.projects)
+  }
+
+  $scope.deleteTask = function(index) {
+    if(index !== -1) {
+      $scope.activeProject.tasks.splice(index, 1);
+      // Inefficient, but save all the projects
+      Projects.save($scope.projects);
+    }
+
   }
 
   // Open our new task modal
