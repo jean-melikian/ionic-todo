@@ -3,9 +3,15 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('todo', ['ionic'])
+var app = angular.module('todo', ['ionic', 'LocalStorageModule']);
+var projectData = 'projects';
 
-.factory('Projects', function() {
+app.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('todo');
+})
+
+.factory('Projects', function(localStorageService) {
   /**
    * The Projects factory handles saving and loading Projects
    * from local storage, and also lets us save and load
@@ -13,15 +19,15 @@ angular.module('todo', ['ionic'])
    */
   return {
     all: function() {
-      var projectString = window.localStorage['projects'];
+      var projectString = localStorageService.get(projectData);
       if(projectString) {
         return angular.fromJson(projectString);
       }
       return [];
     },
 
-    save: function() {
-      window.localStorage['projects'] = angular.toJson(projects);
+    save: function(projects) {
+      localStorageService.set(projectData, angular.toJson(projects));
     },
 
     newProject: function(projectTitle) {
@@ -32,25 +38,18 @@ angular.module('todo', ['ionic'])
     },
 
     getLastActiveIndex: function() {
-      return parseInt(window.localStorage['lastActiveProject']) || 0;
+      return parseInt(localStorageService.get('lastActiveProject')) || 0;
     },
 
     setLastActiveIndex: function(index) {
-      window.localStorage['lastActiveProject'] = index;
+      localStorageService.set('lastActiveProject', index);
     }
   }
 })
 
-.controller('TodoCtrl', function($scope, $timeout, $ionicModal, Projects, $ionicSideMenuDelegate) {
-  /*
-  $scope.tasks = [
-    {title: 'Car Register API'},
-    {title: 'Car Register Android'},
-    {title: 'Fahrenight Android'},
-    {title: 'Replikka Android'}
-  ];
-  */
 
+.controller('TodoCtrl', function($scope, $timeout, $ionicModal, Projects, $ionicSideMenuDelegate, localStorageService) { //store the entities name in a variable
+  $scope.projects = Projects.all();
 
   // A utility function for creating a new project
   // with the given projectTitle
@@ -62,7 +61,7 @@ angular.module('todo', ['ionic'])
   }
 
   // Load or initialize projects
-  $scope.projects = Projects.all();
+
 
   // Grab the last active, or the first project
   $scope.activeProject = $scope.projects[Projects.getLastActiveIndex()];
